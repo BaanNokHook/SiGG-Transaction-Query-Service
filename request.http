@@ -1,0 +1,12 @@
+@apiUrl = http://localhost:8001
+
+#### GET Unverify Transaction
+POST {{apiUrl}}
+content-type: application/json
+
+{
+    "id":"1",
+    "jsonrpc":"2.0",
+    "method": "getunverifytx",
+    "params": ["4c09132c625bb85938302fa9196bb661b97a1dedc82d7c9fce0d008074d9bb88"]
+}

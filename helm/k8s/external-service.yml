@@ -1,0 +1,20 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: backend-mobile-register-db-service
+spec:
+  clusterIP: None
+  ports:
+  - port: 27017
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: backend-mobile-register-db-service
+subsets:
+  - addresses:
+        - ip: 10.120.11.217
+    ports:
+      - port: 27017
+        name: backend-mobile-register-db-service

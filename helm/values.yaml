@@ -1,0 +1,85 @@
+deployment:
+  labels: 
+    app: transaction-submit-service
+    version: 1.0.0
+    component: service
+    part-of: transaction-gateway
+    managed-by: helm
+    tier: backend
+    environment: dev
+  image: ""
+  imagePullSecrets: "gitlab-transaction-gateway-cr"
+  containerPort: 8000
+  env: 
+    - name: APP_NAME
+      value: transaction-submit-service
+    - name: APP_VERSION
+      value: 1.0.0
+    - name: HTTP_PORT
+      value: "8000"
+    - name: LOG_LEVEL
+      value: debug
+    - name: REDIS_ADDR
+      value: nextclan-redis-headless.nextclan:6379
+    - name: REDIS_PASSWORD
+      value: "NextClanxxxyyyzzz8"
+    - name: REDIS_DB
+      value: "0"
+
+  resources:
+  requests:
+    memory: "128Mi"
+    cpu: "0.5"
+  limits:
+    memory: "512Mi"
+    cpu: "1"
+  volumeMounts: []
+    # - name: confpath
+    #   mountPath: /app/product/config/prod-app-configuration.json
+    #   subPath: prod-app-configuration.json
+  volumes: []
+    # - name: confpath
+    #   configMap:
+    #     name: product-config
+  readinessPath: /healthz
+  livenessPath: /healthz
+
+pvc:
+  enable: false
+  # resources:
+  #   requests:
+  #     storage: 10Gi
+  # storageClassName: nfs-client
+
+configMaps: []
+  # - name: name-of-config
+  #   data:
+  #     somefile.json: |
+  #       {
+  #         name: test,
+  #         otherkey: othervalue
+  #       }
+
+## Config-file (optional)
+## Setfile from helm option command
+## Support only one file config
+configmapFile:
+  enable: false
+  # name: config-file
+  # namefile: "config.json"
+  # data: "" 
+
+hpa:
+  enable: false
+  minReplicas: 1
+  maxReplicas: 3
+
+gateway:
+  hosts:
+    - "*"
+
+virtualService:
+  config:
+      uriPrefix: /rpc/transaction-query
+      isRewriteUri: true
+      uriRewrite: /
