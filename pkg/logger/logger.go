@@ -19,68 +19,68 @@ type Interface interface {
 
 // Logger -.
 type Logger struct {
-	logger *zerolog.Logger   
-}  
+	logger *zerolog.Logger
+}
 
-var _ Interface = (*Logger)(nil)   
+var _ Interface = (*Logger)(nil)
 
-// New -. 
+// New -.
 func New(level string) *Logger {
-	var l zerolog.Level 
+	var l zerolog.Level
 
 	switch strings.ToLower(level) {
-	case "error":  
-		l = zerolog.ErrorLevel  
-	case "warn":  
-		l = zerolog.WarnLevel   
-	case "info":   
+	case "error":
+		l = zerolog.ErrorLevel
+	case "warn":
+		l = zerolog.WarnLevel
+	case "info":
 		l = zerolog.InfoLevel
-	case "debug":  
-		l = zerolog.DebugLevel   
-	default:  
-		l = zerolog.InfoLevel 
-	}    
-
-	zerolog.SetGlobalLevel(l)   
-
-	skipFrameCount := 3  
-	logger := zerolog.new(os.Stdout).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).logger()   
-
-	return &Logger{
-		logger: &logger,  
-	}  
-}  
-
-// Debug -.  
-func (l *Logger) Debug(message interface{}, args ...interface{}) {   
-	l.msg("debug", message, args...)   
-}   
-
-// Info -.  
-func (l *Logger) Info(message string, args ...interface{}) {
-	l.log(message, args...)   
-}   
-
-// Warn -.  
-func (l *Logger) Warn(message string, args ...interface{}) {  
-	l.log(message, args...)   
-}  
-
-// Error -.  
-func (l *Logger) Error(message interface{}, args ...interface{}) {  
-	if l.logger.GetLeel() == zerolog.DebugLevel {  
-		l.Debug(message, args...)  
+	case "debug":
+		l = zerolog.DebugLevel
+	default:
+		l = zerolog.InfoLevel
 	}
 
-	l.msg("error", message, args...)   
-}  
+	zerolog.SetGlobalLevel(l)
 
-// Fatal -.  
-func (l *Logger) Fatal(message interface{}, args ...interface{}) {  
-	l.msg("fatal", message, args...)  
+	skipFrameCount := 3
+	logger := zerolog.New(os.Stdout).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).Logger()
 
-	os.Exit(1)  
-}  
+	return &Logger{
+		logger: &logger,
+	}
+}
+
+// Debug -.
+func (l *Logger) Debug(message interface{}, args ...interface{}) {
+	l.msg("debug", message, args...)
+}
+
+// Info -.
+func (l *Logger) Info(message string, args ...interface{}) {
+	l.log(message, args...)
+}
+
+// Warn -.
+func (l *Logger) Warn(message string, args ...interface{}) {
+	l.log(message, args...)
+}
+
+// Error -.
+func (l *Logger) Error(message interface{}, args ...interface{}) {
+	if l.logger.GetLevel() == zerolog.DebugLevel {
+		l.Debug(message, args...)
+	}
+
+	l.msg("error", message, args...)
+}
+
+// Fatal -.
+func (l *Logger) Fatal(message interface{}, args ...interface{}) {
+	l.msg("fatal", message, args...)
+
+	os.Exit(1)
+}
 
 func (l *Logger) log(message string, args ...interface{}) {
 	if len(args) == 0 {
